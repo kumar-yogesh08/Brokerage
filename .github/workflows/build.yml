@@ -8,13 +8,13 @@ jobs:
   build:
     name: Build for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    
+
     strategy:
       matrix:
         include:
           - os: windows-latest
             artifact_name: Brokerage.exe
-            pyinstaller_args: --noconsole --onefile --icon=brokerage_icon.ico --collect-all customtkinter Brokerage.py
+            pyinstaller_args: --noconsole --onefile --icon=Brokerage_icon.ico --collect-all customtkinter Brokerage.py
           - os: macos-latest
             artifact_name: Brokerage
             pyinstaller_args: --noconsole --onefile --collect-all customtkinter Brokerage.py
@@ -26,8 +26,8 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-          cache: 'pip'
+          python-version: "3.11"
+          cache: "pip"
 
       - name: Install Dependencies
         run: |
@@ -37,16 +37,6 @@ jobs:
       - name: Build with PyInstaller
         run: |
           pyinstaller ${{ matrix.pyinstaller_args }}
-
-      - name: Locate and Rename Artifact (Windows)
-        if: matrix.os == 'windows-latest'
-        run: |
-          Move-Item "dist\Brokerage.exe" "dist\Brokerage.exe" -Force
-
-      - name: Locate and Rename Artifact (macOS)
-        if: matrix.os == 'macos-latest'
-        run: |
-          mv dist/Brokerage dist/Brokerage
 
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v1
