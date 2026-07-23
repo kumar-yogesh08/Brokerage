@@ -25,12 +25,15 @@ Currently supports **Groww** and **Zerodha** fee structures.
 
 Since this is a standalone executable, you do not need Python or any other dependencies installed on your system.
 
-1. **Download:** Go to the **[Releases](https://github.com/kumar-yogesh08/Brokerage/releases/latest)** page and download the version for your operating system:
-   - **Windows:** Download `Brokerage.exe`
-   - **macOS:** Download `Brokerage`
-2. **Run:** 
+1. **Download:** Grab the version for your operating system:
+   - **Windows:** [Download Brokerage.exe](https://github.com/kumar-yogesh08/Brokerage/releases/latest/download/Brokerage.exe)
+   - **macOS:** [Download Brokerage](https://github.com/kumar-yogesh08/Brokerage/releases/latest/download/Brokerage)
+
+   Or browse all versions on the **[Releases](https://github.com/kumar-yogesh08/Brokerage/releases)** page.
+
+2. **Run:**
    - **Windows:** Double-click the `.exe` to open the calculator.
-   - **macOS:** Double-click the downloaded file. *(Note: If macOS says the file is not executable, open your Terminal, type `chmod +x `, drag and drop the file into the terminal, and hit Enter).*
+   - **macOS:** Double-click the downloaded file. _(Note: If macOS says the file is not executable, open your Terminal, type `chmod +x `, drag and drop the file into the terminal, and hit Enter)._
 3. **Optional:** You can move this file to your Desktop or pin it to your Taskbar/Dock for quick access during trading hours.
 
 ### ⚠️ A Note on Windows SmartScreen
@@ -41,7 +44,7 @@ Because this application is packaged as an independent executable without an exp
 
 ### ⚠️ A Note on macOS Gatekeeper
 
-Similarly, because the macOS version is not signed with an Apple Developer certificate, macOS Gatekeeper will likely block it the first time with a message saying *"Brokerage cannot be opened because the developer cannot be verified."*
+Similarly, because the macOS version is not signed with an Apple Developer certificate, macOS Gatekeeper will likely block it the first time with a message saying _"Brokerage cannot be opened because the developer cannot be verified."_
 
 - To run it, simply **Right-Click** (or Control-click) the file in Finder, select **Open**, and then click **Open** again in the warning dialog. You only need to do this the first time.
 
