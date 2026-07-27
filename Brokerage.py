@@ -123,12 +123,19 @@ def calculate_max_qty(*args):
         lbl_max_qty_val.configure(text=f"{int(investment // buy_p)} shares" if buy_p > 0 else "0 shares")
     except ValueError: lbl_max_qty_val.configure(text="--")
 
+def delete_multi_trade(index):
+    # Remove the trade at the specified index and refresh the UI
+    if 0 <= index < len(multi_trades_list):
+        del multi_trades_list[index]
+        update_multi_ui()
+
 def update_multi_ui(*args):
     for widget in scrollable_trades_frame.winfo_children(): widget.destroy()
     total_turnover = total_gross = total_charges = total_net = 0.0
     broker = broker_var.get()
 
-    for trade in multi_trades_list:
+    # Use enumerate to get the index (i) of each trade
+    for i, trade in enumerate(multi_trades_list):
         t_turn, t_gross, t_chg, t_net = get_trade_metrics(trade['q'], trade['b'], trade['s'], trade['t'], broker)
         total_turnover += t_turn; total_gross += t_gross; total_charges += t_chg; total_net += t_net
         
@@ -136,8 +143,21 @@ def update_multi_ui(*args):
         row.pack(fill="x", pady=2, padx=5)
         
         color = "#00d09c" if t_net >= 0 else "#eb5b3c"
+        
+        # Trade details on the left
         ctk.CTkLabel(row, text=f"[{trade['t'][:2].upper()}] Q: {trade['q']} | B: ₹{trade['b']} | S: ₹{trade['s']}", font=("Segoe UI", 11), text_color=LABEL_COLOR).pack(side="left", padx=10, pady=5)
-        ctk.CTkLabel(row, text=f"₹{t_net:,.2f}", font=bold_font, text_color=color).pack(side="right", padx=10)
+        
+        # Delete Button on the far right
+        # We use a lambda with default argument (idx=i) to capture the current loop index correctly
+        btn_delete = ctk.CTkButton(
+            row, text="✕", width=24, height=24, fg_color="transparent", 
+            text_color="#eb5b3c", hover_color="#3b1b1b", font=("Segoe UI", 12, "bold"),
+            command=lambda idx=i: delete_multi_trade(idx)
+        )
+        btn_delete.pack(side="right", padx=(5, 10))
+        
+        # Net P&L just to the left of the delete button
+        ctk.CTkLabel(row, text=f"₹{t_net:,.2f}", font=bold_font, text_color=color).pack(side="right", padx=5)
 
     lbl_m_turnover.configure(text=f"₹{total_turnover:,.2f}")
     lbl_m_gross.configure(text=f"₹{total_gross:,.2f}")
@@ -317,5 +337,3 @@ ctk.CTkButton(
 calculate_single()
 calculate_max_qty()
 switch_mode() 
-
-root.mainloop()
