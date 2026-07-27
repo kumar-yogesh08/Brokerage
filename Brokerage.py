@@ -50,6 +50,9 @@ root = ctk.CTk()
 root.title("brokerage Calc")
 root.attributes("-topmost", True)
 
+# Force window initialization before fetching winfo_id for DWM API
+root.update()
+
 try:
     DWMWA_USE_IMMERSIVE_DARK_MODE = 20
     hwnd = ctypes.windll.user32.GetParent(root.winfo_id())
@@ -124,7 +127,6 @@ def calculate_max_qty(*args):
     except ValueError: lbl_max_qty_val.configure(text="--")
 
 def delete_multi_trade(index):
-    # Remove the trade at the specified index and refresh the UI
     if 0 <= index < len(multi_trades_list):
         del multi_trades_list[index]
         update_multi_ui()
@@ -134,7 +136,6 @@ def update_multi_ui(*args):
     total_turnover = total_gross = total_charges = total_net = 0.0
     broker = broker_var.get()
 
-    # Use enumerate to get the index (i) of each trade
     for i, trade in enumerate(multi_trades_list):
         t_turn, t_gross, t_chg, t_net = get_trade_metrics(trade['q'], trade['b'], trade['s'], trade['t'], broker)
         total_turnover += t_turn; total_gross += t_gross; total_charges += t_chg; total_net += t_net
@@ -144,20 +145,23 @@ def update_multi_ui(*args):
         
         color = "#00d09c" if t_net >= 0 else "#eb5b3c"
         
-        # Trade details on the left
+        # 1. Left details
         ctk.CTkLabel(row, text=f"[{trade['t'][:2].upper()}] Q: {trade['q']} | B: ₹{trade['b']} | S: ₹{trade['s']}", font=("Segoe UI", 11), text_color=LABEL_COLOR).pack(side="left", padx=10, pady=5)
-        
-        # Delete Button on the far right
-        # We use a lambda with default argument (idx=i) to capture the current loop index correctly
+
+        # 2. Right-side group (P&L + delete button) held in its own frame so
+        #    packing order/clipping against the scrollbar can't hide the button.
+        right_group = ctk.CTkFrame(row, fg_color="transparent")
+        right_group.pack(side="right", padx=(5, 10), pady=5)
+
+        ctk.CTkLabel(right_group, text=f"₹{t_net:,.2f}", font=bold_font, text_color=color).pack(side="left", padx=(0, 8))
+
         btn_delete = ctk.CTkButton(
-            row, text="✕", width=24, height=24, fg_color="transparent", 
+            right_group, text="✕", width=24, height=24, fg_color="#2a2a2a",
             text_color="#eb5b3c", hover_color="#3b1b1b", font=("Segoe UI", 12, "bold"),
+            corner_radius=6, border_width=0,
             command=lambda idx=i: delete_multi_trade(idx)
         )
-        btn_delete.pack(side="right", padx=(5, 10))
-        
-        # Net P&L just to the left of the delete button
-        ctk.CTkLabel(row, text=f"₹{t_net:,.2f}", font=bold_font, text_color=color).pack(side="right", padx=5)
+        btn_delete.pack(side="left")
 
     lbl_m_turnover.configure(text=f"₹{total_turnover:,.2f}")
     lbl_m_gross.configure(text=f"₹{total_gross:,.2f}")
@@ -337,3 +341,5 @@ ctk.CTkButton(
 calculate_single()
 calculate_max_qty()
 switch_mode() 
+
+root.mainloop()
