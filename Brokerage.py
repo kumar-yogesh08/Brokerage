@@ -1,9 +1,7 @@
 import customtkinter as ctk
 import ctypes
 
-# ==========================================
-# CORE MATH ENGINE
-# ==========================================
+
 def get_trade_metrics(qty, buy_price, sell_price, trade_type, broker):
     buy_value = buy_price * qty
     sell_value = sell_price * qty
